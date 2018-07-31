@@ -4,7 +4,7 @@ const _ = require('lodash');
 const papertrail = require('winston-papertrail').Papertrail;
 const winston = require('winston');
 const zlib = require('zlib');
-
+/*
 const formatLog = (level, message) => {
   const consoleLog = message.split('\t');
   if (consoleLog.length === 3) {
@@ -32,7 +32,7 @@ const formatLog = (level, message) => {
     return message;
   }
 };
-
+*/
 exports.handler = (event, context, callback) => {
   const logger = new (winston.Logger)({
     transports: [],
@@ -46,8 +46,14 @@ exports.handler = (event, context, callback) => {
     includeMetaInMessage: false,
     handleExceptions: true,
     humanReadableUnhandledException: false,
-    logFormat: formatLog,
+  //  logFormat: formatLog,
   });
+  const loggers = {
+    "error" : logger.error,
+    "warning": logger.warning,
+    "info" : logger.info,
+    "debug" : logger.debug
+  }
 
   const payload = new Buffer(event.awslogs.data, 'base64');
   zlib.gunzip(payload, (err, result) => {
@@ -61,10 +67,12 @@ exports.handler = (event, context, callback) => {
     }
 
     logData.logEvents.forEach((line) => {
-      if (line.message && !_.startsWith(line.message, 'START RequestId') && !_.startsWith(line.message, 'END RequestId')
-        && !_.startsWith(line.message, 'REPORT RequestId')) {
-        logger.info(line.message);
-      }
+      const logEntries = line.split('\t')
+      if (logEntries.length >= 4 && logEntries[2] !== "RequestId:") {
+        papertrail.program = logEntries[4];
+        const message = logEntries.slice(4).join('\t');
+        loggers[logEntries[3].toLowerCase()](message);
+      }   
     });
 
     logger.close();
