@@ -59,6 +59,7 @@ class PapertrailLogging {
     let handlerFunction = templateFile
       .replace('%papertrailHost%', this.papertrailHost)
       .replace('%papertrailPort%', this.service.custom.papertrail.port)
+      .replace('%papertrailLevel%', this.service.custom.papertrail.level)
       .replace('%papertrailHostname%', this.service.service)
       .replace('%papertrailProgram%', this.service.provider.stage);
     fs.writeFileSync(path.join(functionPath, 'handler.js'), handlerFunction);
