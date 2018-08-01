@@ -1,3 +1,9 @@
+'use strict';
+
+const papertrail = require('winston-papertrail').Papertrail;
+const winston = require('winston');
+const zlib = require('zlib');
+
 module.exports.handler = (event, context, callback) => {
     const logger = new (winston.Logger)({
         transports: [],
