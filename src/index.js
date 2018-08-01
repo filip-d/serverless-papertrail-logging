@@ -60,8 +60,8 @@ class PapertrailLogging {
       .replace('%papertrailHost%', this.papertrailHost)
       .replace('%papertrailPort%', this.service.custom.papertrail.port)
       .replace('%papertrailLevel%', this.service.custom.papertrail.level)
-      .replace('%papertrailHostname%', this.service.service)
-      .replace('%papertrailProgram%', this.service.provider.stage);
+      .replace('%papertrailHostname%', this.service.custom.papertrail.hostname)
+      .replace('%papertrailProgram%', this.service.custom.papertrail.program);
     fs.writeFileSync(path.join(functionPath, 'handler.js'), handlerFunction);
     this.service.functions[PapertrailLogging.getFunctionName()] = {
       handler: `${PapertrailLogging.getFunctionName()}/handler.handler`,

@@ -14,7 +14,7 @@ module.exports.handler = (event, context, callback) => {
         port: %papertrailPort%,
         level: '%papertrailLevel%',
         hostname: '%papertrailHostname%',
-        //program: '%papertrailProgram%',
+        program: '%papertrailProgram%',
         flushOnClose: true,
         includeMetaInMessage: false,
         handleExceptions: true,
