@@ -8,8 +8,9 @@ class PapertrailLogging {
   constructor(serverless) {
     this.serverless = serverless;
     this.service = serverless.service;
-
-    this.provider = this.serverless.getProvider('aws');
+    this.stage = serverless.processedInput.options.stage;
+   
+   this.provider = this.serverless.getProvider('aws');
 
     this.hooks = {
       'before:package:createDeploymentArtifacts': this.beforePackageCreateDeploymentArtifacts.bind(this),
@@ -40,7 +41,7 @@ class PapertrailLogging {
 
     this.papertrailHost = _.get(this.service, 'custom.papertrail.host', 'logs.papertrailapp.com');
 
-    const loggerFunctionFullName = `${this.service.service}-${this.service.provider.stage}-${PapertrailLogging.getFunctionName()}`;
+    const loggerFunctionFullName = `${this.service.service}-${this.stage}-${PapertrailLogging.getFunctionName()}`;
     _.merge(
       this.service.provider.compiledCloudFormationTemplate.Resources,
       {
